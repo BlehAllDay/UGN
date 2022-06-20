@@ -17,35 +17,44 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ********************************************************************************
 
-windows.hpp
+object.hpp
 
-This uses an OpenGL loader from
-https://glad.dav1d.de/
+Abstract base class for OpenGL objects.
 
 *******************************************************************************/
 
 #pragma once
 
-#include <SDL2/SDL.h>
+#include <memory>
+#include "glad.h"
 
-#ifdef _WIN64
-	#include <windows.h>
-
-	#ifdef BUILD_LIB
-		#define LIB_FUNC_CALL __stdcall __declspec(dllexport)
-	#else
-		#define LIB_FUNC_CALL __stdcall __declspec(dllimport)
-	#endif
-#endif
-
-#ifdef __cplusplus
-extern "C"
+namespace glLib
 {
-#endif
 
-uint8_t	LIB_FUNC_CALL libInit(SDL_Window *window);
-void	LIB_FUNC_CALL libQuit();
+/**
+ * Base object class. Abstract.
+ */
 
-#ifdef __cplusplus
-} // extern "C"
-#endif
+class Object
+{
+	protected:
+		GLuint numObjects;
+		std::unique_ptr<GLuint []> names;	// Because OpenGL works with pointers.
+
+	public:
+		Object() = default;
+		Object(const GLuint &numObjects, void (*createFunc)(GLsizei, GLuint *));
+		virtual ~Object();
+
+		// Copy semantics deleted. No two OpenGL objects can share the same
+		// resources. Would be bad if one deleted them and another tried to use
+		// them after. Maybe.
+		Object(const Object &) = delete;
+		Object & operator = (const Object &) = delete;
+
+		// Move semantics.
+		Object(Object &&obj);
+		Object & operator = (Object &&obj);
+};
+
+} // namespace glLib

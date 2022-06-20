@@ -17,34 +17,61 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ********************************************************************************
 
-windows.hpp
-
-This uses an OpenGL loader from
-https://glad.dav1d.de/
+windows.cpp
 
 *******************************************************************************/
 
-#pragma once
-
 #include <SDL2/SDL.h>
+#include "main.hpp"
 
-#ifdef _WIN64
-	#include <windows.h>
-
-	#ifdef BUILD_LIB
-		#define LIB_FUNC_CALL __stdcall __declspec(dllexport)
-	#else
-		#define LIB_FUNC_CALL __stdcall __declspec(dllimport)
-	#endif
-#endif
+static SDL_GLContext context;
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
-uint8_t	LIB_FUNC_CALL libInit(SDL_Window *window);
-void	LIB_FUNC_CALL libQuit();
+// Windows.
+#ifdef _WIN64
+
+/**
+ * Does nothing other than be the entry point for the DLL.
+ */
+
+BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpReserved)
+{
+    switch(fdwReason)
+    {
+        case DLL_PROCESS_ATTACH:	break;
+        case DLL_THREAD_ATTACH:		break;
+        case DLL_THREAD_DETACH:		break;
+        case DLL_PROCESS_DETACH:	break;
+    }
+
+    return TRUE;
+}
+
+#endif
+
+/**
+
+ */
+
+uint8_t LIB_FUNC_CALL libInit(SDL_Window *window)
+{
+	context = SDL_GL_CreateContext(window);
+
+	return true;
+}
+
+/**
+ *
+ */
+
+void LIB_FUNC_CALL libQuit()
+{
+	SDL_GL_DeleteContext(context);
+}
 
 #ifdef __cplusplus
 } // extern "C"

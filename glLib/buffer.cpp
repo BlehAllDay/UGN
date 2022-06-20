@@ -17,35 +17,19 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ********************************************************************************
 
-windows.hpp
-
-This uses an OpenGL loader from
-https://glad.dav1d.de/
+buffer.cpp
 
 *******************************************************************************/
 
-#pragma once
+#include "buffer.hpp"
 
-#include <SDL2/SDL.h>
-
-#ifdef _WIN64
-	#include <windows.h>
-
-	#ifdef BUILD_LIB
-		#define LIB_FUNC_CALL __stdcall __declspec(dllexport)
-	#else
-		#define LIB_FUNC_CALL __stdcall __declspec(dllimport)
-	#endif
-#endif
-
-#ifdef __cplusplus
-extern "C"
+namespace glLib
 {
-#endif
 
-uint8_t	LIB_FUNC_CALL libInit(SDL_Window *window);
-void	LIB_FUNC_CALL libQuit();
+Buffer::Buffer(const GLuint &numBuffers) :
+	Object(numBuffers, glCreateBuffers)
+{
 
-#ifdef __cplusplus
-} // extern "C"
-#endif
+}
+
+}

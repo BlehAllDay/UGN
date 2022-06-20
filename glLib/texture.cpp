@@ -17,35 +17,38 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ********************************************************************************
 
-windows.hpp
-
-This uses an OpenGL loader from
-https://glad.dav1d.de/
+texture.cpp
 
 *******************************************************************************/
 
-#pragma once
+#include "texture.hpp"
 
-#include <SDL2/SDL.h>
-
-#ifdef _WIN64
-	#include <windows.h>
-
-	#ifdef BUILD_LIB
-		#define LIB_FUNC_CALL __stdcall __declspec(dllexport)
-	#else
-		#define LIB_FUNC_CALL __stdcall __declspec(dllimport)
-	#endif
-#endif
-
-#ifdef __cplusplus
-extern "C"
+namespace glLib
 {
-#endif
 
-uint8_t	LIB_FUNC_CALL libInit(SDL_Window *window);
-void	LIB_FUNC_CALL libQuit();
+Texture::Texture(const GLenum target, const GLuint &numTextures)
+{
+	glCreateTextures(target, numTextures, names.get());
+}
 
-#ifdef __cplusplus
-} // extern "C"
-#endif
+Texture1D::Texture1D(const GLuint numTextures) :
+	Texture(GL_TEXTURE_1D, numTextures)
+{
+}
+
+
+Texture2D::Texture2D(const GLuint numTextures) :
+	Texture(GL_TEXTURE_2D, numTextures)
+{
+
+}
+
+
+
+Texture3D::Texture3D(const GLuint numTextures) :
+	Texture(GL_TEXTURE_3D, numTextures)
+{
+
+}
+
+}

@@ -17,35 +17,36 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ********************************************************************************
 
-windows.hpp
-
-This uses an OpenGL loader from
-https://glad.dav1d.de/
+object.cpp
 
 *******************************************************************************/
 
-#pragma once
 
-#include <SDL2/SDL.h>
 
-#ifdef _WIN64
-	#include <windows.h>
-
-	#ifdef BUILD_LIB
-		#define LIB_FUNC_CALL __stdcall __declspec(dllexport)
-	#else
-		#define LIB_FUNC_CALL __stdcall __declspec(dllimport)
-	#endif
-#endif
-
-#ifdef __cplusplus
-extern "C"
+namespace glLib
 {
-#endif
 
-uint8_t	LIB_FUNC_CALL libInit(SDL_Window *window);
-void	LIB_FUNC_CALL libQuit();
+// Constructor.
+Object::Object(const GLuint &numObjs, void (*createFunc)(GLsizei, GLuint *)) :
+	numObjects	(numObjs),
+	names		(new GLuint[numObjects])
+{
+	(*createFunc)(numObjects, names.get());
+}
 
-#ifdef __cplusplus
-} // extern "C"
-#endif
+// Move consructor.
+Object::Object(Object &&obj)
+{
+	numObjects = obj.numObjects;
+	names.swap(obj.names);
+}
+
+// Move assignment.
+Object & Object::operator = (Object &&obj)
+{
+	numObjects = obj.numObjects;
+	names.swap(obj.names);
+	return *this;
+}
+
+} // namespace glLib
