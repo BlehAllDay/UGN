@@ -26,7 +26,9 @@ Windows DLL header.
 #include <locale>
 #include <SDL2/SDL.h>
 #include "config.hpp"
+#include "console.hpp"
 #include "localization.hpp"
+#include "video.hpp"
 #include "main.hpp"
 
 namespace coreLib
@@ -87,22 +89,21 @@ uint8_t LIB_FUNC_CALL coreInit()
 	// Should stay 0.
 	uint8_t errCode = 0;
 
-	// Get system language.
-
-
-	printf("Loading core library...");
-
+	// Call initialization functions for each system. These simply set things up
+	// to get them ready. We're not actually starting the program at this point.
+	// That happens later.
+	errCode = coreLib::console::init();
 	errCode = coreLib::config::init();
-
 	errCode = coreLib::localization::init();
-	if(errCode)
-		return errCode;
+	errCode = coreLib::video::init();
 
 	if(SDL_Init(SDL_INIT_TIMER) < 0)
 	{
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "X", SDL_GetError(), NULL);
 		return 1;
 	}
+
+	errCode = coreLib::video::init();
 
 	printf("Done.\n");
 
@@ -118,6 +119,7 @@ void LIB_FUNC_CALL coreQuit()
 {
 	printf("Unloading core library...\n");
 	SDL_Quit();
+	coreLib::config::quit();
 }
 
 /**
