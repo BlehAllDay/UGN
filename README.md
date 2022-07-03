@@ -27,10 +27,10 @@ The Vulkan wrapper library is not in development yet, so there's no need to down
 
 ## Building
 
-# Windows
+### Windows
 
 Currently there are no scripts to automate the build process, so if you want to build this source (as incomplete as it is), you'll have to do it manually. An IDE such as CodeBlocks will help, but eventually the goal is to include the stuff needed to build for GCC. VC++ I'm not really interested in, same with DirectX. That may change, but for the moment this is all I can offer.
 
-# Other Operating Systems
+### Other Operating Systems
 
 This will be constructed as support for other systems becomes available.
